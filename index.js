@@ -9,6 +9,7 @@ const app = express();
 app.use(express.json());
 
 app.use('/api/post', require('./api/post'));
+app.use('/api/account', require('./api/account'));
 
 const PORT = process.env.PORT || 1776;
 
