@@ -3,6 +3,11 @@ const router = require('express').Router();
 const Account = require('../model/account');
 
 router.get('/', (req, res) => {
+    // try {
+    //     res.json({ message: 'Hello World!' });
+    // } catch (error) {
+    //     console.log("there was an error");
+    // }
     res.json({ message: 'Hello World!' });
 })
 
