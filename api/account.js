@@ -2,6 +2,10 @@ const router = require('express').Router();
 
 const Account = require('../model/account');
 
+router.get('/', (req, res) => {
+    res.json({ message: 'Hello World!' });
+})
+
 router.get('/:id', async (req, res) => {
     // get data by id
     const { id } = req.params;
