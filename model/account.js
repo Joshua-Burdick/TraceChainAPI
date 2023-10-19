@@ -11,6 +11,6 @@ const acconutSchema = new mongoose.Schema({
     // }
 });
 
-const Account = mongoose.model('Accounts', acconutSchema);
+const Account = mongoose.model('accounts', acconutSchema, 'accounts');
 
 module.exports = Account;

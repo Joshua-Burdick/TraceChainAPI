@@ -1,19 +1,29 @@
 const router = require('express').Router();
 
+const { default: mongoose } = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+
 const Account = require('../model/account');
 
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
     // try {
     //     res.json({ message: 'Hello World!' });
     // } catch (error) {
     //     console.log("there was an error");
     // }
+    // res.json({ message: 'Hello World!' });   
+    // const data = await Account.find().select('username usertag');
     res.json({ message: 'Hello World!' });
+    // res.json({ data });
 })
 
 router.get('/:id', async (req, res) => {
     // get data by id
     const { id } = req.params;
+    console.log("Receiveed request with ID" , id);
+    if(!ObjectId.isValid(id)){
+        res.json({ message: 'Object ID invalid!' });
+    }
     const data = await Account.findById(id);
     res.json({ data });
 });
