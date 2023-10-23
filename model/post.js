@@ -2,15 +2,16 @@
 
 const mongoose = require('mongoose');
 
+const {MONGO_URI} = process.env;
+const conn = mongoose.createConnection(MONGO_URI);
+
 const postSchema = new mongoose.Schema({
   title: String,
   body: String,
   meta: {
     votes: Number,
     timePosted: Number
-  }
+  } 
 });
 
-const Post = mongoose.model('Post', postSchema);
-
-module.exports = Post;
+module.exports = conn.model('Post', postSchema);

@@ -1,16 +1,12 @@
-// mongoose schema for pulling a account/profile
+const { Schema, model } = require('mongoose');
 
-const mongoose = require('mongoose');
-
-const acconutSchema = new mongoose.Schema({
+const AccountSchema = new Schema({
     username: String,
     usertag: String,
-    // meta: {
-    //     votes: Number,
-    //     timePosted: Number
-    // }
-});
+    posts: [String],
+    comments: [String]
+})
 
-const Account = mongoose.model('accounts', acconutSchema, 'accounts');
+const Account = model('Account', AccountSchema, 'accounts');
 
 module.exports = Account;

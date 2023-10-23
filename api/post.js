@@ -15,8 +15,16 @@ router.get('/get_the_data', async (req, res) => {
 router.get('/get_the_data/:id', async (req, res) => {
   // get data by id
   const { id } = req.params;
-  const data = await Post.findById(id);
-  res.json({ data });
+  console.log("Receiveed request with ID", id);
+  try {
+    // const idAsObjectId = mongoose.Types.ObjectId(id); 
+    const data = await Post.findById(id).exec();
+    console.log(data);
+    res.json({ data });
+  } catch (error) {
+    console.error("An error occurred when trying to find the id: ", error);
+    res.status(500).json({ message: 'Error occurred while fetching data' });
+  }
 });
 
 router.post('/post_the_data', async (req, res) => {

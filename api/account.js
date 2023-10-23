@@ -1,9 +1,11 @@
-const router = require('express').Router();
 
-const { default: mongoose } = require('mongoose');
-const ObjectId = mongoose.Types.ObjectId;
-
+const { Router } = require('express');
 const Account = require('../model/account');
+
+const mongoose =  require('mongoose');
+const { ObjectId } = require('mongoose');
+
+const router = Router();
 
 router.get('/', async (req, res) => {
     // try {
@@ -13,19 +15,27 @@ router.get('/', async (req, res) => {
     // }
     // res.json({ message: 'Hello World!' });   
     // const data = await Account.find().select('username usertag');
-    res.json({ message: 'Hello World!' });
+    try {
+        res.json({ message: 'Hello World!' });
+    } catch (error) {
+        console.log("route / had the following error: ", error);
+    }
     // res.json({ data });
 })
 
 router.get('/:id', async (req, res) => {
     // get data by id
     const { id } = req.params;
-    console.log("Receiveed request with ID" , id);
-    if(!ObjectId.isValid(id)){
-        res.json({ message: 'Object ID invalid!' });
+    console.log("Receiveed request with ID", id);
+    try {
+        const idAsObjectId = new mongoose.Types.ObjectId(id);
+        const data = await Account.findById(idAsObjectId).exec();
+        console.log(data);
+        res.json({ data });
+    } catch (error) {
+        console.error("An error occurred when trying to find the id: ", error);
+        res.status(500).json({ message: 'Error occurred while fetching data' });
     }
-    const data = await Account.findById(id);
-    res.json({ data });
 });
 
 // commented out temporarily until get request returns profile username and usertag as needed.
