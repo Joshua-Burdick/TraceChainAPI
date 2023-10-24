@@ -1,11 +1,8 @@
 // mongoose schema for a user post
 
-const mongoose = require('mongoose');
+const { Schema, model } = require('mongoose');
 
-const {MONGO_URI} = process.env;
-const conn = mongoose.createConnection(MONGO_URI);
-
-const postSchema = new mongoose.Schema({
+const postSchema = new Schema({
   title: String,
   body: String,
   meta: {
@@ -14,4 +11,6 @@ const postSchema = new mongoose.Schema({
   } 
 });
 
-module.exports = conn.model('Post', postSchema);
+const Post = model('Post', postSchema, 'posts');
+
+module.exports = Post;
