@@ -30,12 +30,6 @@ router.get('/:id', async (req, res) => {
   res.json({ data });
 });
 
-router.post('/post_the_data', async (req, res) => {
-  // post data
-  const { body } = req;
-  const data = await Post.create(body);
-  res.json({ data });
-});
 
 // router.put('/put_the_data/:id', async (req, res) => {
 //   // edit something by _id mongo
