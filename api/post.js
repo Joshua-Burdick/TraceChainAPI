@@ -44,20 +44,24 @@ router.get('/:param', async (req, res) => {
   }
 })
 
-router.post('/:id/:content', async (req, res) => {
+router.post('/:id/', async (req, res) => {
   try {
     const userId = req.params.id;
     const userIdAsObjectID = new mongoose.Types.ObjectId(userId);
     console.log(userId);
-    const content = decodeURIComponent(req.params.content);
+    const post = req.body;
 
-    console.log("content: ", content);
+    console.log("post: ", post);
+    console.log("post sources: ", post.sources);
+    console.log("post content: ", post.content);
 
     await Post.create({
       _userId: userIdAsObjectID,
-      content: content,
+      content: post.content,
+      sources: post.sources,
+      isInformative: true,
+      isEdited: true,
       time: Date.now(),
-      sources: []
     });
 
     res.status(201).json({ message: "Post Inserted to collection" }).end();
