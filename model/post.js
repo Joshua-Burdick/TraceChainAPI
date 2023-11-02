@@ -5,8 +5,10 @@ const { Schema, model, default: mongoose } = require('mongoose');
 const postSchema = new Schema({
   _userId: mongoose.Types.ObjectId,
   content: String,
-  time: Date,
-  sources: [String]
+  sources: [String],
+  isInformative: Boolean,
+  isEdited: Boolean,
+  time: Date
   // meta: {
   //   votes: Number,
   //   timePosted: Number
