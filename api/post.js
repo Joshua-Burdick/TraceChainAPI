@@ -24,13 +24,14 @@ router.get('/', (req, res) => {
 //   }
 // })
 
+// get the posts of a certain user by the userid
 router.get('/:param', async (req, res) => {
   const { param } = req.params;
   console.log("Receiveed request with param", param);
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(param);
-    // const data = await Post.findOne({$or: [{_id: idAsObjectId},{userId: idAsObjectId}]}).exec();
-    const userIdData = await Post.find({ _userid: idAsObjectId }).exec();
+    // find the posts associated with that userId
+    const userIdData = await Post.find({ _userId: idAsObjectId }).exec();
     if (userIdData) {
       console.log(userIdData);
       res.json(userIdData);
