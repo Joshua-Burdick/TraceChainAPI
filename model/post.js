@@ -6,6 +6,8 @@ const postSchema = new Schema({
   _userId: mongoose.Types.ObjectId,
   content: String,
   sources: [String],
+  likes: Number,
+  dislikes: Number,
   isInformative: Boolean,
   isEdited: Boolean,
   time: Date

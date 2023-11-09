@@ -59,6 +59,8 @@ router.post('/:id/', async (req, res) => {
       _userId: userIdAsObjectID,
       content: post.content,
       sources: post.sources,
+      likes: 0,
+      dislikes: 0,
       isInformative: true,
       isEdited: true,
       time: Date.now(),
