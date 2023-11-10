@@ -9,6 +9,7 @@ dotenv.config();
 const AccountRoutes = require('./api/account');
 const PostRoutes = require('./api/post');
 const LoginRoutes = require('./api/login');
+const UserRoute =  require('./api/user');
 
 const envUri = process.env.MONGO_URI;
 
@@ -30,6 +31,7 @@ mongoose.connect(envUri, {
 app.use('/api/account', AccountRoutes);
 app.use('/api/post', PostRoutes);
 app.use('/api/login', LoginRoutes);
+app.use('/api/user', UserRoute);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT} 🎆...`);
