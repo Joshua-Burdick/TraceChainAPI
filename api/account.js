@@ -51,7 +51,7 @@ router.get('/:id', async (req, res) => {
         const idAsObjectId = new mongoose.Types.ObjectId(id);
         const data = await Account.findById(idAsObjectId).exec();
         console.log(data);
-        res.json({ data });
+        res.json(data);
     } catch (error) {
         console.error("An error occurred when trying to find the id: ", error);
         res.status(500).json({ message: 'Error occurred while fetching data' });
