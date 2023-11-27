@@ -23,7 +23,7 @@ router.get(`/feed`, async (req, res) => {
 })
 
 router.get('/:id', async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params.id;
   console.log("Receiveed request with ID", id);
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(id);
