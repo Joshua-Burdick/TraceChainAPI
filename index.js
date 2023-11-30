@@ -27,11 +27,11 @@ mongoose
   .then(() => console.log('MongoDB database Connected...'))
   .catch((err) => console.log("mongoose.connect has the following error: ", err));
   
-console.log('past mongoose.connect');
-
 app.use('/api/account', AccountRoutes);
 app.use('/api/post', PostRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT} 🎆...`);
 });
+
+console.log('past app.listen');
