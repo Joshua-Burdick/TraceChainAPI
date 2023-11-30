@@ -6,8 +6,6 @@ const mongoose = require('mongoose');
 
 dotenv.config();
 
-console.log('ENV TEST', process.env.MONGO_DB_NAME);
-
 const AccountRoutes = require('./api/account');
 const PostRoutes = require('./api/post');
 
@@ -19,6 +17,8 @@ app.use(express.json());
 app.use(cors());
 
 const PORT = process.env.PORT || 1776;
+
+console.log("PORT: ", PORT);
 
 mongoose
   .connect(envUri, {
