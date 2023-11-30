@@ -18,8 +18,6 @@ app.use(cors());
 
 const PORT = process.env.PORT || 1776;
 
-console.log("PORT: ", PORT);
-
 mongoose
   .connect(envUri, {
     useNewUrlParser: true,
@@ -29,6 +27,8 @@ mongoose
   .then(() => console.log('MongoDB database Connected...'))
   .catch((err) => console.log("mongoose.connect has the following error: ", err));
   
+console.log('past mongoose.connect');
+
 app.use('/api/account', AccountRoutes);
 app.use('/api/post', PostRoutes);
 
