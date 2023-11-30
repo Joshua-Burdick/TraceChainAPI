@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 router.get(`/feed`, async (req, res) => {
   console.log("GENERATING FEED...");
   try {
-    const data = await Post.find({}).sort({ createdAt: -1});
+    const data = await Post.find({}).sort({ createdAt: -1 });
     console.log(data);
     res.json(data);
   } catch (error) {
@@ -22,19 +22,39 @@ router.get(`/feed`, async (req, res) => {
   }
 })
 
-router.get('/:id', async (req, res) => {
-  const { id } = req.params.id;
-  console.log("Receiveed request with ID", id);
+// get the posts of a certain user by the userid
+router.get('/:param', async (req, res) => {
+  const { param } = req.params;
+  console.log("Receiveed request with param", param);
   try {
-    const idAsObjectId = new mongoose.Types.ObjectId(id);
-    const data = await Post.findById(idAsObjectId).exec();
-    console.log(data);
-    res.json(data);
+    // const idAsObjectId = new mongoose.Types.ObjectId(param);
+    // find the posts associated with that userId
+    const userIdData = await Post.find({ _userId: param }).exec();
+    if (userIdData) {
+      console.log(userIdData);
+      res.json(userIdData);
+    } else {
+      res.status(404).json({ message: 'No data was found' });
+    }
   } catch (error) {
     console.error("An error occurred when trying to find the id: ", error);
     res.status(500).json({ message: 'Error occurred while fetching data' });
   }
 })
+
+// router.get('/:id', async (req, res) => {
+//   const { id } = req.params.id;
+//   console.log("Receiveed request with ID", id);
+//   try {
+//     const idAsObjectId = new mongoose.Types.ObjectId(id);
+//     const data = await Post.findById(idAsObjectId).exec();
+//     console.log(data);
+//     res.json(data);
+//   } catch (error) {
+//     console.error("An error occurred when trying to find the id: ", error);
+//     res.status(500).json({ message: 'Error occurred while fetching data' });
+//   }
+// })
 
 
 

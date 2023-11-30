@@ -1,20 +1,22 @@
 // mongoose schema for a user post
 
-const { Schema, model } = require('mongoose');
+const { Schema, model, default: mongoose } = require('mongoose');
 
 const postSchema = new Schema({
-  _userId: String,
+  _userId: mongoose.Types.ObjectId,
   content: String,
-  time: Date,
   sources: [String],
   likes: Number,
   dislikes: Number,
   isInformative: Boolean,
-  isEdited: Boolean
+  isEdited: Boolean,
+  time: Date
   // meta: {
   //   votes: Number,
   //   timePosted: Number
   // } 
+  }, {
+    timestamps: true
 });
 
 const Post = model('Post', postSchema, 'posts');
