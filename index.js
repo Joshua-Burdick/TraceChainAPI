@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 
 dotenv.config();
 
-console.log('This is a test of deployment');
+console.log('ENV TEST', process.env.MONGO_DB_NAME);
 
 const AccountRoutes = require('./api/account');
 const PostRoutes = require('./api/post');
