@@ -1,4 +1,3 @@
-
 const { Router } = require('express');
 const Account = require('../model/account');
 
