@@ -35,3 +35,5 @@ app.use('/api/register', RegisterRoutes);
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT} 🎆...`);
 });
+
+module.exports = app;

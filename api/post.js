@@ -24,6 +24,18 @@ router.get('/', (req, res) => {
 //   }
 // })
 
+router.get(`/feed`, async (req, res) => {
+  console.log("GENERATING FEED...");
+  try {
+    const data = await Post.find({}).sort({ createdAt: -1});
+    console.log(data);
+    res.json(data);
+  } catch (error) {
+    console.error("An error occurred when trying to generate Feed: ", error);
+    res.status(500).json({ message: 'Error occurred while Feeding' });
+  }
+})
+
 // get the posts of a certain user by the userid
 router.get('/:param', async (req, res) => {
   const { param } = req.params;
@@ -31,7 +43,7 @@ router.get('/:param', async (req, res) => {
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(param);
     // find the posts associated with that userId
-    const userIdData = await Post.find({ _userId: idAsObjectId }).exec();
+    const userIdData = await Post.find({ _userId: idAsObjectId }).sort({ createdAt: -1 });
     if (userIdData) {
       console.log(userIdData);
       res.json(userIdData);
@@ -61,8 +73,8 @@ router.post('/:id/', async (req, res) => {
       sources: post.sources,
       likes: 0,
       dislikes: 0,
-      isInformative: true,
-      isEdited: true,
+      isInformative: post.isInformative,
+      isEdited: post.isEdited,
       time: Date.now(),
     });
 
