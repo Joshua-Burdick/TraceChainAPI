@@ -24,6 +24,18 @@ router.get('/', (req, res) => {
 //   }
 // })
 
+router.get(`/feed`, async (req, res) => {
+  console.log("GENERATING FEED...");
+  try {
+    const data = await Post.find({}).sort({ createdAt: -1});
+    console.log(data);
+    res.json(data);
+  } catch (error) {
+    console.error("An error occurred when trying to generate Feed: ", error);
+    res.status(500).json({ message: 'Error occurred while Feeding' });
+  }
+})
+
 // get the posts of a certain user by the userid
 router.get('/:param', async (req, res) => {
   const { param } = req.params;
@@ -61,8 +73,8 @@ router.post('/:id/', async (req, res) => {
       sources: post.sources,
       likes: 0,
       dislikes: 0,
-      isInformative: true,
-      isEdited: true,
+      isInformative: post.isInformative,
+      isEdited: post.isEdited,
       time: Date.now(),
     });
 
