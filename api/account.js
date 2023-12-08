@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const Account = require('../model/account');
 
-const mongoose =  require('mongoose');
+const mongoose = require('mongoose');
 const { ObjectId } = require('mongoose');
 
 const router = Router();
@@ -22,6 +22,26 @@ router.get('/', async (req, res) => {
     }
     // res.json({ data });
 })
+
+router.get('/search', async (req, res) => {
+    const { searchParam } = req.query
+    try {
+        // console.log("sucess");
+        // res.status(200).json({ message: 'yippee' });
+        console.log("in searchParam route, ere is searchParam: ", searchParam);
+        const data = await Account.find({ $or: [{ username: {$regex: String(searchParam)} }, { usertag: {$regex: String(searchParam)} }] });
+        if (data) {
+            console.log(data);
+            res.json(data);
+        } else {
+            console.log("there was an error");
+            res.status(500).json({ message: 'Error occurred while fetching data' });
+        }
+    } catch (error) {
+        console.error("An error occurred when trying to find the id: ", error);
+        res.status(500).json({ message: 'Error occurred while fetching data' });
+    }
+});
 
 router.get('/:id', async (req, res) => {
     // get data by id
