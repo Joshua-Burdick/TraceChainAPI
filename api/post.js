@@ -1,40 +1,85 @@
 const router = require('express').Router();
-
+const mongoose = require('mongoose');
 const Post = require('../model/post');
 
 router.get('/', (req, res) => {
-  res.json({ message: 'Hello World!' });
+  try {
+    res.json({ message: 'Hello World from Post!' });
+  } catch (error) {
+    console.log("route / had the following error: ", error);
+  }
 })
 
-router.get('/get_the_data', async (req, res) => {
-  // get all data
-  const big_data = await Post.find();
-  res.json({ big_data });
+router.get(`/feed`, async (req, res) => {
+  console.log("GENERATING FEED...");
+  try {
+    const data = await Post.find({}).sort({ createdAt: -1 });
+    console.log(data);
+    res.json(data);
+  } catch (error) {
+    console.error("An error occurred when trying to generate Feed: ", error);
+    res.status(500).json({ message: 'Error occurred while Feeding' });
+  }
 })
 
-router.get('/get_the_data/:id', async (req, res) => {
-  // get data by id
-  const { id } = req.params;
-  const data = await Post.findById(id);
-  res.json({ data });
+// get the posts of a certain user by the userid
+router.get('/:param', async (req, res) => {
+  const { param } = req.params;
+  console.log("Receiveed request with param", param);
+  try {
+    const idAsObjectId = new mongoose.Types.ObjectId(param);
+    // find the posts associated with that userId
+    const userIdData = await Post.find({ _userId: idAsObjectId }).sort({ createdAt: -1 });
+    if (userIdData) {
+      console.log(userIdData);
+      res.json(userIdData);
+    } else {
+      res.status(404).json({ message: 'No data was found' });
+    }
+  } catch (error) {
+    console.error("An error occurred when trying to find the id: ", error);
+    res.status(500).json({ message: 'Error occurred while fetching data' });
+  }
+})
+
+router.post('/:id/', async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const userIdAsObjectID = new mongoose.Types.ObjectId(userId);
+    console.log(userId);
+    const post = req.body;
+
+    console.log("post: ", post);
+    console.log("post sources: ", post.sources);
+    console.log("post content: ", post.content);
+
+    await Post.create({
+      _userId: userIdAsObjectID,
+      content: post.content,
+      sources: post.sources,
+      likes: 0,
+      dislikes: 0,
+      isInformative: post.isInformative,
+      isEdited: post.isEdited,
+      time: Date.now(),
+    });
+
+    res.status(201).json({ message: "Post Inserted to collection" }).end();
+  } catch (error) {
+    console.log("The followin error occured at /:id/:content : ", error);
+    res.status(500).json({ message: "Error occured" }).end();
+  }
 });
 
-router.post('/post_the_data', async (req, res) => {
-  // post data
-  const { body } = req;
-  const data = await Post.create(body);
-  res.json({ data });
-});
+// router.put('/put_the_data/:id', async (req, res) => {
+//   // edit something by _id mongo
+// });
 
-router.put('/put_the_data/:id', async (req, res) => {
-  // edit something by _id mongo
-});
-
-router.delete('/delete_the_data/:id', async (req, res) => {
-  // delete something by _id mongo
-  const { id } = req.params;
-  const data = await Post.findByIdAndDelete(id);
-  res.json({ data });
-});
+// router.delete('/delete_the_data/:id', async (req, res) => {
+//   // delete something by _id mongo
+//   const { id } = req.params;
+//   const data = await Post.findByIdAndDelete(id);
+//   res.json({ data });
+// });
 
 module.exports = router;

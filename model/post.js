@@ -1,16 +1,24 @@
 // mongoose schema for a user post
 
-const mongoose = require('mongoose');
+const { Schema, model, default: mongoose } = require('mongoose');
 
-const postSchema = new mongoose.Schema({
-  title: String,
-  body: String,
-  meta: {
-    votes: Number,
-    timePosted: Number
-  }
+const postSchema = new Schema({
+  _userId: mongoose.Types.ObjectId,
+  content: String,
+  sources: [String],
+  likes: Number,
+  dislikes: Number,
+  isInformative: Boolean,
+  isEdited: Boolean,
+  time: Date
+  // meta: {
+  //   votes: Number,
+  //   timePosted: Number
+  // } 
+  }, {
+    timestamps: true
 });
 
-const Post = mongoose.model('Post', postSchema);
+const Post = model('Post', postSchema, 'posts');
 
 module.exports = Post;
