@@ -58,7 +58,7 @@ router.post('/:id/', async (req, res) => {
       dislikes: 0,
       isInformative: post.isInformative,
       isEdited: post.isEdited,
-      time: post.time,
+      time: new Date(post.time),
     });
 
     res.status(201).json({ message: "Post Inserted to collection" }).end();
