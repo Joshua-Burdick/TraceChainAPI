@@ -20,8 +20,8 @@ router.post('/', async (req, res) => {
 
     await Account.create({
       _id: new mongoose.Types.ObjectId(newRegistration._id),
-      username: newRegistration.username,
-      usertag: newRegistration.displayName,
+      username: displayName,
+      usertag: username,
       posts: [],
       followers: [],
       following: []
