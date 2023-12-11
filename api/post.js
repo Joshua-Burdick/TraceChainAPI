@@ -63,25 +63,22 @@ router.post('/:id/', async (req, res) => {
     console.log(userId);
     const post = req.body;
 
-    console.log("post: ", post);
-    console.log("post sources: ", post.sources);
-    console.log("post content: ", post.content);
-
     await Post.create({
-      _userId: userIdAsObjectID,
+      _id: userIdAsObjectID,
+      userId: post.userId,
       content: post.content,
       sources: post.sources,
       likes: 0,
       dislikes: 0,
       isInformative: post.isInformative,
       isEdited: post.isEdited,
-      time: Date.now(),
+      time: post.time,
     });
 
     res.status(201).json({ message: "Post Inserted to collection" }).end();
   } catch (error) {
-    console.log("The followin error occured at /:id/:content : ", error);
-    res.status(500).json({ message: "Error occured" }).end();
+    console.log("The following error occurred at /:id/:content : ", error);
+    res.status(500).json({ message: "Error occurred" }).end();
   }
 });
 
