@@ -58,5 +58,53 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+router.get('/:id/header', async (req, res) => {
+    // get the header of a post by the postid
+    const { id } = req.params;
+    console.log("Receiveed request with ID", id);
+    try {
+        const idAsObjectId = new mongoose.Types.ObjectId(id);
+        data = await Account.findById(idAsObjectId).exec();
+        res.json({
+            username: data.username,
+            usertag: data.usertag
+        });
+    } catch (error) {
+        console.error("An error occurred when trying to find the id: ", error);
+        res.status(500).json({ message: 'Error occurred while fetching data' });
+    }
+});
+
+router.put('/:id/follow', async (req, res) => {
+    const { id } = req.params;
+    const { followerId } = req.body;
+    console.log("Received request with ID", id);
+    try {
+        const idAsObjectId = new mongoose.Types.ObjectId(id);
+        const followerIdAsObjectId = new mongoose.Types.ObjectId(followerId);
+        const data = await Account.findByIdAndUpdate(idAsObjectId, { $push: { followers: followerIdAsObjectId } }, { new: true }).exec();
+        console.log(data);
+        res.json(data);
+    } catch (error) {
+        console.error("An error occurred when trying to find the id: ", error);
+        res.status(500).json({ message: 'Error occurred while fetching data' });
+    }
+});
+
+router.put('/:id/unfollow', async (req, res) => {
+    const { id } = req.params;
+    const { followerId } = req.body;
+    console.log("Received request with ID", id);
+    try {
+        const idAsObjectId = new mongoose.Types.ObjectId(id);
+        const followerIdAsObjectId = new mongoose.Types.ObjectId(followerId);
+        const data = await Account.findByIdAndUpdate(idAsObjectId, { $pull: { followers: followerIdAsObjectId } }, { new: true }).exec();
+        console.log(data);
+        res.json(data);
+    } catch (error) {
+        console.error("An error occurred when trying to find the id: ", error);
+        res.status(500).json({ message: 'Error occurred while fetching data' });
+    }
+});
 
 module.exports = router;

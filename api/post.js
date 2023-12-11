@@ -29,7 +29,7 @@ router.get('/:param', async (req, res) => {
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(param);
     // find the posts associated with that userId
-    const userIdData = await Post.find({ _userId: idAsObjectId }).sort({ createdAt: -1 });
+    const userIdData = await Post.find({ userId: idAsObjectId }).sort({ createdAt: -1 });
     if (userIdData) {
       console.log(userIdData);
       res.json(userIdData);
@@ -45,29 +45,25 @@ router.get('/:param', async (req, res) => {
 router.post('/:id/', async (req, res) => {
   try {
     const userId = req.params.id;
-    const userIdAsObjectID = new mongoose.Types.ObjectId(userId);
-    console.log(userId);
     const post = req.body;
-
-    console.log("post: ", post);
-    console.log("post sources: ", post.sources);
-    console.log("post content: ", post.content);
+    const postId = new mongoose.Types.ObjectId();
 
     await Post.create({
-      _userId: userIdAsObjectID,
+      _id: postId,
+      userId: post.userId,
       content: post.content,
       sources: post.sources,
       likes: 0,
       dislikes: 0,
       isInformative: post.isInformative,
       isEdited: post.isEdited,
-      time: Date.now(),
+      time: new Date(post.time),
     });
 
     res.status(201).json({ message: "Post Inserted to collection" }).end();
   } catch (error) {
-    console.log("The followin error occured at /:id/:content : ", error);
-    res.status(500).json({ message: "Error occured" }).end();
+    console.log("The following error occurred at /:id/:content : ", error);
+    res.status(500).json({ message: "Error occurred" }).end();
   }
 });
 
