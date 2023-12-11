@@ -45,12 +45,11 @@ router.get('/:param', async (req, res) => {
 router.post('/:id/', async (req, res) => {
   try {
     const userId = req.params.id;
-    const userIdAsObjectID = new mongoose.Types.ObjectId(userId);
-    console.log(userId);
     const post = req.body;
+    const postId = new mongoose.Types.ObjectId();
 
     await Post.create({
-      _id: userIdAsObjectID,
+      _id: postId,
       userId: post.userId,
       content: post.content,
       sources: post.sources,
