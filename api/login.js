@@ -1,8 +1,7 @@
 const router = require('express').Router();
 const Login = require('../model/login');
 const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
-
+const bcrypt = require('bcrypt');
 
 router.get('/', async (req, res) => {
     try {
@@ -19,9 +18,12 @@ router.post('/', async (req, res) => {
     const { username, password} = req.body;
     try {
         // Check if the provided login credentials are valid by querying the "login" collection
-        const user = await Login.findOne({ password: password, username: username });
+        const user = await Login.findOne({ username });
         console.log('user ', user);
+        
         if (user) {
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+            if (isPasswordValid) {
             // If login is successful, get the user's account ID
             console.log("the user has id ", user.id);
 
@@ -35,6 +37,7 @@ router.post('/', async (req, res) => {
 
             // send response
             res.json({ user, token });
+            }
         }
         else {
             res.status(401).json({ message: 'Login failed. Invalid credentials.' });
@@ -44,9 +47,5 @@ router.post('/', async (req, res) => {
         res.status(500).json({ message: 'An error occurred while processing the request.' });
     }
 });
-
-
-
-
 
 module.exports = router;
