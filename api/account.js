@@ -82,9 +82,13 @@ router.put('/:id/follow', async (req, res) => {
     try {
         const idAsObjectId = new mongoose.Types.ObjectId(id);
         const followerIdAsObjectId = new mongoose.Types.ObjectId(followerId);
-        const data = await Account.findByIdAndUpdate(idAsObjectId, { $push: { followers: followerIdAsObjectId } }, { new: true }).exec();
-        console.log(data);
-        res.json(data);
+
+        const followData = await Account.findByIdAndUpdate(idAsObjectId, { $push: { followers: followerIdAsObjectId } }, { new: true }).exec();
+        const followingData = await Account.findByIdAndUpdate(followerIdAsObjectId, { $push: { following: idAsObjectId } }, { new: true }).exec();
+        
+        console.log(followData, followingData);
+
+        res.json({ followData, followingData });
     } catch (error) {
         console.error("An error occurred when trying to find the id: ", error);
         res.status(500).json({ message: 'Error occurred while fetching data' });
@@ -98,9 +102,13 @@ router.put('/:id/unfollow', async (req, res) => {
     try {
         const idAsObjectId = new mongoose.Types.ObjectId(id);
         const followerIdAsObjectId = new mongoose.Types.ObjectId(followerId);
-        const data = await Account.findByIdAndUpdate(idAsObjectId, { $pull: { followers: followerIdAsObjectId } }, { new: true }).exec();
-        console.log(data);
-        res.json(data);
+
+        const followData = await Account.findByIdAndUpdate(idAsObjectId, { $pull: { followers: followerIdAsObjectId } }, { new: true }).exec();
+        const followingData = await Account.findByIdAndUpdate(followerIdAsObjectId, { $pull: { following: idAsObjectId } }, { new: true }).exec();
+
+        console.log(followData, followingData);
+
+        res.json({ followData, followingData });
     } catch (error) {
         console.error("An error occurred when trying to find the id: ", error);
         res.status(500).json({ message: 'Error occurred while fetching data' });
