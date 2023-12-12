@@ -56,6 +56,30 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.put('/:id/likes_dislikes', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const { userId, like, dislike } = req.body;
+    const idAsObjectId = new mongoose.Types.ObjectId(id);
+    const data = await Post.findById(idAsObjectId).exec();
+    if (data) {
+      if (like) {
+        data.likes.push(userId);
+      }
+      if (dislike) {
+        data.dislikes.push(userId);
+      }
+      await data.save();
+      res.json({ message: 'Post updated' });
+    } else {
+      res.status(404).json({ message: 'No data was found' });
+    }
+  } catch (error) {
+    console.error("An error occurred when trying to update the likes/dislikes: ", error);
+    res.status(500).json({ message: 'Error occurred while updating data' });
+  }
+});
+
 router.post('/:id/', async (req, res) => {
   try {
     const userId = req.params.id;
