@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 router.get(`/feed`, async (req, res) => {
   console.log("GENERATING FEED...");
   try {
-    const data = await Post.find({}).sort({ createdAt: -1 });
+    const data = await Post.find({}).sort({ time: -1 });
     console.log(data);
     res.json(data);
   } catch (error) {
