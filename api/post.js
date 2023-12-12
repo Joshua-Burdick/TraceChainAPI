@@ -29,7 +29,7 @@ router.get('/user/:param', async (req, res) => {
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(param);
     // find the posts associated with that userId
-    const userIdData = await Post.find({ userId: idAsObjectId }).sort();
+    const userIdData = await Post.find({ userId: idAsObjectId }).sort({ time: -1 });
     if (userIdData) {
       console.log(userIdData);
       res.json(userIdData);
