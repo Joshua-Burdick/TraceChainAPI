@@ -7,8 +7,8 @@ const postSchema = new Schema({
   userId: String,
   content: String,
   sources: [Object],
-  likes: Number,
-  dislikes: Number,
+  likes: [String],
+  dislikes: [String],
   isInformative: Boolean,
   isEdited: Boolean,
   time: Date
