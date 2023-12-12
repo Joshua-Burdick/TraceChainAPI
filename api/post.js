@@ -58,6 +58,7 @@ router.get('/:id', async (req, res) => {
 
 router.put('/:id/likes_dislikes', async (req, res) => {
   const { id } = req.params;
+  console.log("Received likes/dislikes request with ID", id);
   try {
     const { userId, like, dislike, remove } = req.body;
     const idAsObjectId = new mongoose.Types.ObjectId(id);
