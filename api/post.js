@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 router.get(`/feed`, async (req, res) => {
   console.log("GENERATING FEED...");
   try {
-    const data = await Post.find({}).sort({ createdAt: -1 });
+    const data = await Post.find({}).sort({ time: -1 });
     console.log(data);
     res.json(data);
   } catch (error) {
@@ -29,7 +29,7 @@ router.get('/user/:param', async (req, res) => {
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(param);
     // find the posts associated with that userId
-    const userIdData = await Post.find({ userId: idAsObjectId }).sort({ createdAt: -1 });
+    const userIdData = await Post.find({ userId: idAsObjectId }).sort({ time: -1 });
     if (userIdData) {
       console.log(userIdData);
       res.json(userIdData);
@@ -44,7 +44,7 @@ router.get('/user/:param', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  console.log("Receiveed request with ID", id);
+  console.log("Receiv ed request with ID", id);
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(id);
     const data = await Post.findById(idAsObjectId).exec();
@@ -53,6 +53,43 @@ router.get('/:id', async (req, res) => {
   } catch (error) {
     console.error("An error occurred when trying to find the id: ", error);
     res.status(500).json({ message: 'Error occurred while fetching data' });
+  }
+});
+
+router.put('/:id/likes_dislikes', async (req, res) => {
+  const { id } = req.params;
+  console.log("Received likes/dislikes request with ID", id);
+  try {
+    const { userId, like, dislike, remove } = req.body;
+    const idAsObjectId = new mongoose.Types.ObjectId(id);
+    const data = await Post.findById(idAsObjectId).exec();
+    if (data) {
+      if (like) {
+        if (remove) {
+          data.likes.pull(userId);
+        }
+        else {
+          data.likes.push(userId);
+          data.dislikes.pull(userId);
+        }
+      }
+      if (dislike) {
+        if (remove) {
+          data.dislikes.pull(userId);
+        }
+        else {
+          data.dislikes.push(userId);
+          data.likes.pull(userId);
+        }
+      }
+      await data.save();
+      res.json({ message: 'Post updated' });
+    } else {
+      res.status(404).json({ message: 'No data was found', data: `data: ${data}` });
+    }
+  } catch (error) {
+    console.error("An error occurred when trying to update the likes/dislikes: ", error);
+    res.status(500).json({ message: 'Error occurred while updating data' });
   }
 });
 
