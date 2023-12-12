@@ -2,6 +2,8 @@ const router = require('express').Router();
 const mongoose = require('mongoose');
 const Register = require('../model/register');
 const Account = require('../model/account');
+const bcrypt = require('bcrypt');
+
 
 router.get('/', (req, res) => {
   try {
