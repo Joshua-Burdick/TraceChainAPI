@@ -23,7 +23,7 @@ router.get(`/feed`, async (req, res) => {
 })
 
 // get the posts of a certain user by the userid
-router.get('/:param', async (req, res) => {
+router.get('/user/:param', async (req, res) => {
   const { param } = req.params;
   console.log("Receiveed request with param", param);
   try {
