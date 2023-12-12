@@ -29,7 +29,7 @@ router.get('/search', async (req, res) => {
         // console.log("sucess");
         // res.status(200).json({ message: 'yippee' });
         console.log("in searchParam route, ere is searchParam: ", searchParam);
-        const data = await Account.find({ $or: [{ username: {$regex: String(searchParam)} }, { usertag: {$regex: String(searchParam)} }] });
+        const data = await Account.find({ $or: [{ username: {$regex: String(searchParam), $options: 'i'} }, { usertag: {$regex: String(searchParam), $options: 'i'} }] });
         if (data) {
             console.log(data);
             res.json(data);
