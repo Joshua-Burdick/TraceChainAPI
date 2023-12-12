@@ -84,7 +84,7 @@ router.put('/:id/likes_dislikes', async (req, res) => {
       await data.save();
       res.json({ message: 'Post updated' });
     } else {
-      res.status(404).json({ message: 'No data was found' });
+      res.status(404).json({ message: 'No data was found', data: `data: ${data}` });
     }
   } catch (error) {
     console.error("An error occurred when trying to update the likes/dislikes: ", error);
