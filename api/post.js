@@ -64,12 +64,22 @@ router.put('/:id/likes_dislikes', async (req, res) => {
     const data = await Post.findById(idAsObjectId).exec();
     if (data) {
       if (like) {
-        data.likes.push(userId);
-        data.dislikes.pull(userId);
+        if (remove) {
+          data.likes.pull(userId);
+        }
+        else {
+          data.likes.push(userId);
+          data.dislikes.pull(userId);
+        }
       }
       if (dislike) {
-        data.dislikes.push(userId);
-        data.likes.pull(userId);
+        if (remove) {
+          data.dislikes.pull(userId);
+        }
+        else {
+          data.dislikes.push(userId);
+          data.likes.pull(userId);
+        }
       }
       await data.save();
       res.json({ message: 'Post updated' });
