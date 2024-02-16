@@ -115,42 +115,6 @@ router.put('/:id/unfollow', async (req, res) => {
     }
 });
 
-router.put('/:id/changeLogin', async(req, res) => {
-//username and password needs to be changed
 
-
-
-})
-
-router.put('/:id/changeAccount', async(req, res) => {
-//displayName, email, and username needs to be updated
-    const userId  = req.params.id;
-    const { displayName, email, username} = req.body;
-
-  try {
-    // Find the user by ID
-    const user = await Account.findById(userId);
-
-    if (!user) {
-        return res.status(404).send('User not found');
-    }
-
-    // Update user information
-    user.displayName = displayName || user.displayName;
-    user.email = email || user.email;
-    user.username = username || user.username;
-
-    // Save the updated user
-    await user.save();
-
-    // Respond with updated user
-    res.json(user);
-    }   catch (error) {
-    console.error("An error occurred when trying to update the user: ", error);
-    res.status(500).json({ message: 'Error occurred while updating user data' });
-    }
-
-
-})
 
 module.exports = router;
