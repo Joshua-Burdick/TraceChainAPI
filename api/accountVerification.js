@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const AccountVerification = require('../model/accountVerification');
+const Account = require('../model/account');
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongoose');
 
@@ -59,6 +60,13 @@ router.put('/:id/changeAccount', async(req, res) => {
 
     // Save the updated user
     await user.save();
+
+    // Update user information in accounts collection
+    await Account.updateOne({ _id: userId }, {
+        username: user.displayName,
+        email: user.email,
+        usertag: user.username
+    });
 
     // Respond with updated user
     res.json(user);
