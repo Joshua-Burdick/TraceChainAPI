@@ -13,6 +13,7 @@ router.get('/', async (req, res) => {
 
 // API endpoint for user login verification
 router.post('/', async (req, res) => {
+    console.log('IS THIS EVEN WORKIN?');
     console.log('Inside Post Request');
     // use req.body since the fields were passed in as URL parameters
     const { username, password} = req.body;
