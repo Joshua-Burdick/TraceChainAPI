@@ -19,6 +19,35 @@ const upload = multer({
     storage: Storage
 }).single('testImage');
 
+router.post('/find', upload, async (req, res) => {
+    console.log("tyring to find that hash in the DB");
+
+    try {
+        const salt = await bcrypt.genSalt(5);
+        const image = req.file.filename;
+
+        // Hash the password using the generated salt
+        const imgHash = await bcrypt.hash(image, salt);
+        console.log("hash: ", imgHash);
+        console.log("hash type ", typeof (imgHash));
+
+        // will return an array of results
+        const imgAlreadyExists = ImageSchema.find({ 'hash': imgHash });
+
+        // empty array means no results
+        if (imgAlreadyExists.lenth === 0) {
+            console.log("That image exists already.");
+        } else {
+            console.log("New Image!!");
+        }
+
+        res.json(imgHash);
+    } catch (error) {
+        console.log("The following error occurred at /upload/new: ", error);
+        res.status(500).json({ message: "Error occurred" }).end();
+    }
+})
+
 router.post('/new', upload, async (req, res) => {
     console.log("iamge");
     // upload(req, res, (err) => {
@@ -41,7 +70,10 @@ router.post('/new', upload, async (req, res) => {
         // Hash the password using the generated salt
         const imgHash = await bcrypt.hash(image, salt);
         console.log("hash: ", imgHash);
-        console.log("hash type ", typeof(imgHash));
+        console.log("hash type ", typeof (imgHash));
+
+        // numocc holds the postID of the post is the image is attached to
+
 
         const newImg = await ImageSchema.create({
             name: req.body.name,

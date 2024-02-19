@@ -9,7 +9,7 @@ const ImageSchema = new mongoose.Schema({
         contentType: String
     },
     hash: String,
-    //numOccurences: Number
+    postId: mongoose.Types.ObjectId
 });
 
 const imageUpload = model('imageUpload', ImageSchema, 'photos');

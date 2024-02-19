@@ -99,11 +99,14 @@ router.post('/:id/', async (req, res) => {
     const post = req.body;
     const postId = new mongoose.Types.ObjectId();
 
+    console.log(post.photos);
+
     await Post.create({
       _id: postId,
       userId: post.userId,
       content: post.content,
       sources: post.sources,
+      photos: post.photos,
       likes: [],
       dislikes: [],
       isInformative: post.isInformative,
@@ -111,7 +114,8 @@ router.post('/:id/', async (req, res) => {
       time: new Date(post.time),
     });
 
-    res.status(201).json({ message: "Post Inserted to collection" }).end();
+    // res.status(201).json({ message: "Post Inserted to collection" }).end();
+    res.status(201).json(postId);
   } catch (error) {
     console.log("The following error occurred at /:id/:content : ", error);
     res.status(500).json({ message: "Error occurred" }).end();
