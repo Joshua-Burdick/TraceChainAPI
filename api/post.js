@@ -56,6 +56,33 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+router.put('/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log("Received request with ID", id);
+
+  try {
+    const post = req.body;
+    const idAsObjectId = new mongoose.Types.ObjectId(id);
+    const data = await Post.findById(idAsObjectId).exec();
+
+    if (data) {
+      data.content = post.content;
+      data.sources = post.sources;
+      data.isInformative = post.isInformative;
+      data.isEdited = true;
+      data.time = new Date(post.time);
+      await data.save();
+
+      res.json({ message: 'Post updated' });
+    } else {
+      res.status(404).json({ message: 'No data was found', data: `data: ${data}` });
+    }
+  } catch (error) {
+    console.error("An error occurred when trying to update the post: ", error);
+    res.status(500).json({ message: 'Error occurred while updating data' });
+  }
+});
+
 router.put('/:id/likes_dislikes', async (req, res) => {
   const { id } = req.params;
   console.log("Received likes/dislikes request with ID", id);
