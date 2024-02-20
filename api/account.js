@@ -61,7 +61,7 @@ router.get('/:id', async (req, res) => {
 router.get('/:id/header', async (req, res) => {
     // get the header of a post by the postid
     const { id } = req.params;
-    console.log("Receiveed request with ID", id);
+    console.log("Received request with ID", id);
     try {
         const idAsObjectId = new mongoose.Types.ObjectId(id);
         data = await Account.findById(idAsObjectId).exec();
@@ -98,7 +98,7 @@ router.put('/:id/follow', async (req, res) => {
 router.put('/:id/unfollow', async (req, res) => {
     const { id } = req.params;
     const { followerId } = req.body;
-    console.log("Received request with ID", id);
+    console.log("Received request with ID", id); 
     try {
         const idAsObjectId = new mongoose.Types.ObjectId(id);
         const followerIdAsObjectId = new mongoose.Types.ObjectId(followerId);
@@ -114,5 +114,7 @@ router.put('/:id/unfollow', async (req, res) => {
         res.status(500).json({ message: 'Error occurred while fetching data' });
     }
 });
+
+
 
 module.exports = router;
