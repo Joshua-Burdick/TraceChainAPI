@@ -195,7 +195,15 @@ router.delete(`/:id/`, async (req, res) => {
   const { id } = req.params;
 
   try {
-    Post.findById(id).deleteOne().exec();
+    const post = Post.findById(id);
+    
+    if (post.parentPostId) {
+      const parentPost = Post.findById(post.parentPostId).exec();
+      parentPost.replies.pull(id);
+      await parentPost.save();
+    }
+    post.deleteOne().exec();
+
   } catch (error) {
     console.log("Erro deleting post: ", error);
     res.status(500).json({ message: "Error deleting post: "});
