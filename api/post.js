@@ -83,6 +83,29 @@ router.put('/:id', async (req, res) => {
   }
 });
 
+router.put('/:id/replies', async (req, res) => {
+  const { id } = req.params;
+  console.log("Received replies request with ID", id);
+
+  try {
+    const { replyId } = req.body;
+    const idAsObjectId = new mongoose.Types.ObjectId(id);
+    const data = await Post.findById(idAsObjectId).exec();
+    
+    if (data) {
+      data.replies.push(replyId);
+      await data.save();
+      res.json({ message: 'Post updated' });
+    }
+    else {
+      res.status(404).json({ message: 'No data was found', data: `data: ${data}` });
+    }
+  } catch (error) {
+    console.error("An error occurred when trying to update the replies: ", error);
+    res.status(500).json({ message: 'Error occurred while updating data' });
+  }
+});
+
 router.put('/:id/likes_dislikes', async (req, res) => {
   const { id } = req.params;
   console.log("Received likes/dislikes request with ID", id);
@@ -126,7 +149,7 @@ router.post('/:id/', async (req, res) => {
     const post = req.body;
     const postId = new mongoose.Types.ObjectId();
 
-    await Post.create({
+    const dbPost = await Post.create({
       _id: postId,
       userId: post.userId,
       content: post.content,
@@ -138,7 +161,7 @@ router.post('/:id/', async (req, res) => {
       time: new Date(post.time),
     });
 
-    res.status(201).json({ message: "Post Inserted to collection" }).end();
+    res.status(201).json(dbPost).end();
   } catch (error) {
     console.log("The following error occurred at /:id/:content : ", error);
     res.status(500).json({ message: "Error occurred" }).end();
