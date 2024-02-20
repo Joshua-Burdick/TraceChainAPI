@@ -10,6 +10,7 @@ const postSchema = new Schema({
   replies: [String],
   likes: [String],
   dislikes: [String],
+  parentPostId: String,
   isInformative: Boolean,
   isEdited: Boolean,
   time: Date
