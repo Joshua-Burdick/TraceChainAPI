@@ -81,15 +81,17 @@ router.put('/:id/changeAccount', async(req, res) => {
 
 router.delete('/:id/delete', async (req, res) => {
     try {
+      const { param } = req.params;
       const userId  = req.params.id;
+      const idAsObjectId = new mongoose.Types.ObjectId(param);
       await Account.deleteOne({ _id: userId });
       await AccountVerification.deleteOne({ _id: userId });
-      await Post.deleteOne({_id: userId});
+      await Post.deleteMany({_id: idAsObjectId, });
       res.status(200).json({ message: 'User deleted successfully' });
     } catch (error) {
       console.error(error);
       res.status(500).json({ message: 'Internal server error' });
     }
   })
-s
+
 module.exports = router;
