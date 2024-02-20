@@ -174,8 +174,10 @@ router.post('/:id/', async (req, res) => {
       userId: post.userId,
       content: post.content,
       sources: post.sources,
+      replies: [],
       likes: [],
       dislikes: [],
+      parentPostId: post.parentPostId,
       isInformative: post.isInformative,
       isEdited: post.isEdited,
       time: new Date(post.time),
@@ -187,6 +189,19 @@ router.post('/:id/', async (req, res) => {
     res.status(500).json({ message: "Error occurred" }).end();
   }
 });
+
+
+router.delete(`/:id/`, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    Post.findById(id).deleteOne().exec();
+  } catch (error) {
+    console.log("Erro deleting post: ", error);
+    res.status(500).json({ message: "Error deleting post: "});
+  }
+  res.status(200).json({ message: "post deleted"});
+})
 
 // router.put('/put_the_data/:id', async (req, res) => {
 //   // edit something by _id mongo
