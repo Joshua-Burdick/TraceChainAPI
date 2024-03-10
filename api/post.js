@@ -99,7 +99,7 @@ router.post('/:id/', async (req, res) => {
     const post = req.body;
     const postId = new mongoose.Types.ObjectId();
 
-    console.log(post.photos);
+    console.log("post.photos type in api: ", typeof(post.photos));
 
     await Post.create({
       _id: postId,

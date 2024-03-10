@@ -7,7 +7,7 @@ const postSchema = new Schema({
   userId: String,
   content: String,
   sources: [Object],
-  photos: [String],
+  photos: [Object],
   likes: [String],
   dislikes: [String],
   isInformative: Boolean,

@@ -17,7 +17,7 @@ const Storage = multer.diskStorage({
 
 const upload = multer({
     storage: Storage
-}).single('testImage');
+}).single('file');
 
 router.post('/find', upload, async (req, res) => {
     console.log("tyring to find that hash in the DB");
@@ -73,7 +73,7 @@ router.post('/new', upload, async (req, res) => {
         console.log("hash type ", typeof (imgHash));
 
         // numocc holds the postID of the post is the image is attached to
-
+        
 
         const newImg = await ImageSchema.create({
             name: req.body.name,
@@ -100,8 +100,9 @@ router.post('/new', upload, async (req, res) => {
             // if the image hash already exists, you do not need to reupload it
             // numOccurences = # of postIds where ut iccyrs
         });
-        console.log(newImg);
-        res.status(201).json({ message: "Photo uploaded." });
+        console.log("newImg: ", newImg);
+        console.log("Photo uploaded." );
+        res.status(201).json(newImg);
     } catch (error) {
         console.log("The following error occurred at /upload/new: ", error);
         res.status(500).json({ message: "Error occurred" }).end();
