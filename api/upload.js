@@ -73,7 +73,7 @@ router.post('/new', upload, async (req, res) => {
         console.log("hash type ", typeof (imgHash));
 
         // numocc holds the postID of the post is the image is attached to
-        
+
 
         const newImg = await ImageSchema.create({
             name: req.body.name,
@@ -101,13 +101,28 @@ router.post('/new', upload, async (req, res) => {
             // numOccurences = # of postIds where ut iccyrs
         });
         console.log("newImg: ", newImg);
-        console.log("Photo uploaded." );
+        console.log("Photo uploaded.");
         res.status(201).json(newImg);
     } catch (error) {
         console.log("The following error occurred at /upload/new: ", error);
         res.status(500).json({ message: "Error occurred" }).end();
     }
 })
+
+router.get('/:hash', async (req, res) => {
+    console.log("get iamge by hash");
+    const { hash } = req.params;
+    console.log("Received request with hash", hash);
+    try {
+        const data = await ImageSchema.find({ hash: hash }).exec();
+        data[0].img['buffer'] = Buffer.from(data[0].img.data).toString('base64');
+        console.log("data: ", data[0].img.buffer);
+        console.log('res ', res.json(data));
+    } catch (error) {
+        console.error("An error occurred when trying to find the id: ", error);
+        res.status(500).json({ message: 'Error occurred while fetching data' });
+    }
+});
 
 // router.get('/', (req, res) => {
 //     imgSchema.find({})
