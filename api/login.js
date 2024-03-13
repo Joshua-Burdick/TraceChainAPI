@@ -25,11 +25,11 @@ router.post('/', async (req, res) => {
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (isPasswordValid) {
             // If login is successful, get the user's account ID
-            console.log("the user has id ", user.id);
+            console.log("the user has id ", user._id);
 
             // create a JWT as a string that contains the user id and username
             // secret is the secret key that only the server knows 
-            const token = jwt.sign({ id: user.id, username }, 'secret');
+            const token = jwt.sign({ id: user._id, username }, 'secret');
 
             // set an HTTP respponse header to create a new cookie in client's browser
             // user_token is the actualy token, httpOnly is a security measure
