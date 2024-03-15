@@ -13,30 +13,31 @@ router.get('/', async (req, res) => {
 
 // API endpoint for user login verification
 router.post('/', async (req, res) => {
-    console.log('Inside Post Request');
     // use req.body since the fields were passed in as URL parameters
-    const { username, password} = req.body;
+    const { username, password } = req.body;
     try {
         // Check if the provided login credentials are valid by querying the "login" collection
         const user = await Login.findOne({ username });
-        console.log('user ', user);
         
         if (user) {
             const isPasswordValid = await bcrypt.compare(password, user.password);
             if (isPasswordValid) {
-            // If login is successful, get the user's account ID
-            console.log("the user has id ", user._id);
+                // If login is successful, get the user's account ID
+                console.log("the user has id ", user._id);
 
-            // create a JWT as a string that contains the user id and username
-            // secret is the secret key that only the server knows 
-            const token = jwt.sign({ id: user._id, username }, 'secret');
+                // create a JWT as a string that contains the user id and username
+                // secret is the secret key that only the server knows 
+                const token = jwt.sign({ id: user._id, username }, 'secret');
 
-            // set an HTTP respponse header to create a new cookie in client's browser
-            // user_token is the actualy token, httpOnly is a security measure
-            res.setHeader('Set-Cookie', `user_token=${token}; HttpOnly;`);
+                // set an HTTP respponse header to create a new cookie in client's browser
+                // user_token is the actualy token, httpOnly is a security measure
+                res.setHeader('Set-Cookie', `user_token=${token}; HttpOnly;`);
 
-            // send response
-            res.json({ user, token });
+                // send response
+                res.json({ user, token });
+            }
+            else {
+                res.status(401).json({ message: 'Login failed. Invalid credentials.' });
             }
         }
         else {
