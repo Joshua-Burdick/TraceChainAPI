@@ -7,9 +7,14 @@ const postSchema = new Schema({
   userId: String,
   content: String,
   sources: [Object],
+<<<<<<< HEAD
   photos: [Object],
+=======
+  replies: [String],
+>>>>>>> 9a55543da89fd4f5c49afecb102143ccf6024f77
   likes: [String],
   dislikes: [String],
+  parentPostId: String,
   isInformative: Boolean,
   isEdited: Boolean,
   time: Date
