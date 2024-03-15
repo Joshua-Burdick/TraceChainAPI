@@ -15,8 +15,13 @@ const envUri = process.env.MONGO_URI;
 
 const app = express();
 
+const corsOptions = {
+  origin: '*',
+  optionsSuccessStatus: 200
+}
+
 app.use(express.json());
-app.use(cors());
+app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 1776;
 
