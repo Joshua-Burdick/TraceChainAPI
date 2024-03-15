@@ -1,6 +1,7 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, default: mongoose } = require('mongoose');
 
 const AccountSchema = new Schema({
+    _id: mongoose.Types.ObjectId,
     username: String,
     usertag: String,
     posts: [String],

@@ -10,18 +10,6 @@ router.get('/', (req, res) => {
   }
 })
 
-router.get(`/feed`, async (req, res) => {
-  console.log("GENERATING FEED...");
-  try {
-    const data = await Post.find({}).sort({ time: -1 });
-    console.log(data);
-    res.json(data);
-  } catch (error) {
-    console.error("An error occurred when trying to generate Feed: ", error);
-    res.status(500).json({ message: 'Error occurred while Feeding' });
-  }
-})
-
 // get the posts of a certain user by the userid
 router.get('/user/:param', async (req, res) => {
   const { param } = req.params;
