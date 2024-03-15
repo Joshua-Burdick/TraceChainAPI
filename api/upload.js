@@ -49,20 +49,6 @@ router.post('/find', upload, async (req, res) => {
 })
 
 router.post('/new', upload, async (req, res) => {
-    console.log("iamge");
-    // upload(req, res, (err) => {
-    //     if (err) {
-    //         console.log("Following error occured in .post /upload/new: ", err);
-    //     } else {
-    //         await ImageSchema.create({
-    //             name: req.body.name,
-    //             img: {
-    //                 data: req.file.filename,
-    //                 contentType: "image/png"
-    //             }
-    //         })
-    //     }
-    // })
     try {
         const salt = await bcrypt.genSalt(5);
         const image = req.file.filename;
@@ -74,33 +60,15 @@ router.post('/new', upload, async (req, res) => {
 
         // numocc holds the postID of the post is the image is attached to
 
-
         const newImg = await ImageSchema.create({
             name: req.body.name,
             img: {
-                data: req.file.filename,
-                contentType: "image/jpeg"
+                data: req.file.buffer,
+                contentType: req.file.mimetype
             },
             hash: imgHash
-            // // Generate a salt
-            // const salt = await bcrypt.genSalt(12);
-
-            // // Hash the password using the generated salt
-            // const hash = await bcrypt.hash(user.password, salt);
-
-            // // Update the user's password with the hashed one
-            // user.password = hash;
-
-            // // Continue with the save operation
-            // return next();
-
-            //hash: 
-
-            // hash the image
-            // if the image hash already exists, you do not need to reupload it
-            // numOccurences = # of postIds where ut iccyrs
         });
-        console.log("newImg: ", newImg);
+        console.log("newImg: ", newImg.buffer);
         console.log("Photo uploaded.");
         res.status(201).json(newImg);
     } catch (error) {
@@ -115,9 +83,7 @@ router.get('/:hash', async (req, res) => {
     console.log("Received request with hash", hash);
     try {
         const data = await ImageSchema.find({ hash: hash }).exec();
-        data[0].img['buffer'] = Buffer.from(data[0].img.data).toString('base64');
-        console.log("data: ", data[0].img.buffer);
-        console.log('res ', res.json(data));
+        res.json(data);
     } catch (error) {
         console.error("An error occurred when trying to find the id: ", error);
         res.status(500).json({ message: 'Error occurred while fetching data' });
