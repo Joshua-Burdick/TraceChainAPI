@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const AccountVerification = require('../model/accountVerification');
 const Account = require('../model/account');
+const Post = require('../model/post');
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongoose');
+
 
 
 // localhost:1776/api/account
@@ -75,6 +77,21 @@ router.put('/:id/changeAccount', async(req, res) => {
     res.status(500).json({ message: 'Error occurred while updating user data' });
     }
 
-})
+});
+
+router.delete('/:id/delete', async (req, res) => {
+    try {
+      const { param } = req.params;
+      const userId  = req.params.id;
+      const idAsObjectId = new mongoose.Types.ObjectId(param);
+      await Account.deleteOne({ _id: userId });
+      await AccountVerification.deleteOne({ _id: userId });
+      await Post.deleteMany({_id: idAsObjectId, });
+      res.status(200).json({ message: 'User deleted successfully' });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  })
 
 module.exports = router;
