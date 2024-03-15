@@ -7,6 +7,11 @@ const RegisterSchema = new Schema({
   displayName: String,
   password: String, 
   email: String, 
+  verified: {
+    type: Boolean,
+    default: false
+  },
+  verificationToken: String
 });
 
 RegisterSchema.pre('save', async function (next) {

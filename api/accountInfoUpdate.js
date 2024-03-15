@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const AccountVerification = require('../model/accountVerification');
+const AccountInfoUpdate = require('../model/accountInfoUpdate');
 const Account = require('../model/account');
 const mongoose = require('mongoose');
 const { ObjectId } = require('mongoose');
@@ -30,7 +30,7 @@ router.get('/:id', async (req, res) => {
     console.log("Received request with ID", id);
     try {
         const idAsObjectId = new mongoose.Types.ObjectId(id);
-        const data = await AccountVerification.findById(idAsObjectId).exec();
+        const data = await AccountInfoUpdate.findById(idAsObjectId).exec();
         console.log(data);
         res.json(data);
     } catch (error) {
@@ -47,7 +47,7 @@ router.put('/:id/changeAccount', async(req, res) => {
 
   try {
     // Find the user by ID
-    const user = await AccountVerification.findById(userId);
+    const user = await AccountInfoUpdate.findById(userId);
 
     if (!user) {
         return res.status(404).send('User not found');
