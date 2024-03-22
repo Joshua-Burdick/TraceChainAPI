@@ -1,124 +1,78 @@
 const router = require('express').Router();
-const util = require('util');
+const path = require('path');
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const methodOverride = require('method-override');
 const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
 const ImageSchema = require('../model/upload');
 
-router.get('/', (req, res) => {
-    res.send('success');
-})
-
-const Storage = multer.diskStorage({
-    destination: "uploads",
-    filename: (req, file, callback) => {
-        callback(null, file.originalname);
-    },
-})
-
-const upload = multer({
-    storage: Storage
-}).single('file');
-
-router.post('/find', upload, async (req, res) => {
-    console.log("tyring to find that hash in the DB");
-
-    try {
-        const salt = await bcrypt.genSalt(5);
-        const image = req.file.filename;
-
-        // Hash the password using the generated salt
-        const imgHash = await bcrypt.hash(image, salt);
-        console.log("hash: ", imgHash);
-        console.log("hash type ", typeof (imgHash));
-
-        // will return an array of results
-        const imgAlreadyExists = ImageSchema.find({ 'hash': imgHash });
-
-        // empty array means no results
-        if (imgAlreadyExists.lenth === 0) {
-            console.log("That image exists already.");
-        } else {
-            console.log("New Image!!");
-        }
-
-        res.json(imgHash);
-    } catch (error) {
-        console.log("The following error occurred at /upload/new: ", error);
-        res.status(500).json({ message: "Error occurred" }).end();
-    }
-})
-
-router.post('/new', upload, async (req, res) => {
-    try {
-        const salt = await bcrypt.genSalt(5);
-        const image = req.file.filename;
-
-        // Hash the password using the generated salt
-        const imgHash = await bcrypt.hash(image, salt);
-        console.log("hash: ", imgHash);
-        console.log("hash type ", typeof (imgHash));
-
-        // numocc holds the postID of the post is the image is attached to
-
-        const newImg = await ImageSchema.create({
-            name: req.body.name,
-            img: {
-                data: req.file.buffer,
-                contentType: req.file.mimetype
-            },
-            hash: imgHash
+const storage = new GridFsStorage({
+    url: process.env.MONGO_URI,
+    file: (req, file) => {
+        return new Promise(async (resolve, reject) => {
+            const filename = await bcrypt.hash(file.originalname, 5) + path.extname(file.originalname);
+            const fileInfo = {
+                filename: filename,
+                bucketName: 'uploads'
+            };
+            resolve(fileInfo);
         });
-        console.log("newImg: ", newImg.buffer);
-        console.log("Photo uploaded.");
-        res.status(201).json(newImg);
-    } catch (error) {
-        console.log("The following error occurred at /upload/new: ", error);
-        res.status(500).json({ message: "Error occurred" }).end();
-    }
-})
+    },
+});
+const upload = multer({ storage });
 
-router.get('/:hash', async (req, res) => {
-    console.log("get iamge by hash");
-    const { hash } = req.params;
-    console.log("Received request with hash", hash);
-    try {
-        const data = await ImageSchema.find({ hash: hash }).exec();
-        res.json(data);
-    } catch (error) {
-        console.error("An error occurred when trying to find the id: ", error);
-        res.status(500).json({ message: 'Error occurred while fetching data' });
-    }
+let gfs;
+mongoose.connection.once('open', () => {
+  gfs = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+    bucketName: 'uploads'
+  });
 });
 
-// router.get('/', (req, res) => {
-//     imgSchema.find({})
-//         .then((data, err) => {
-//             if (err) {
-//                 console.log(err);
-//             }
-//             res.render('imagepage', { items: data })
-//         })
-// });
+router.post('/:postId', upload.single('file'), async (req, res) => {
+    const { file } = req;
+    const { postId } = req.params;
+    console.log("Received file: ", file, postId);
 
-// router.post('/', upload.single('image'), (req, res, next) => {
-//     let obj = {
-//         name: req.body.name,
-//         desc: req.body.desc,
-//         img: {
-//             data: fs.readFileSync(path.join(__dirname + '/uploads/' + req.file.filename)),
-//             contentType: 'image/png'
-//         }
-//     }
-//     imgSchema.create(obj)
-//         .then((err, item) => {
-//             if (err) {
-//                 console.log(err);
-//             }
-//             else {
-//                 // item.save();
-//                 res.redirect('/');
-//             }
-//         });
-// });
+    ImageSchema.findOne({ filename: file.filename })
+        .then((image) => {
+            if (image) {
+                res.status(200).json({
+                    message: 'File already exists',
+                    success: false
+                });
+            }
+
+            const newImage = new ImageSchema({
+                name: file.originalname,
+                hash: file.filename.replace(`.${path.extname(file.originalname)}`, ''),
+                postId: postId
+            });
+
+            newImage.save()
+                .then((image) => {
+                    res.status(200).json({
+                        success: true,
+                        image
+                    })
+                })
+                .catch((error) => res.status(500).json(error));
+        })
+        .catch((error) => res.status(500).json(error));
+});
+
+router.get('/:filename', (req, res) => {
+    console.log("gfs", gfs)
+    gfs.GridFSBucket.files.find({ filename: req.params.filename }).toArray((err, files) => {
+        if (!files[0] || files.length === 0) {
+            return res.status(200).json({
+                success: false,
+                message: "No files available"
+            }).end();
+        }
+
+        gfs.openDownloadStreamByName(req.params.filename).pipe(res);
+    });
+});
 
 module.exports = router;

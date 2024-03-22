@@ -4,7 +4,6 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const multer = require('multer');
 
 dotenv.config();
 
@@ -36,19 +35,6 @@ mongoose.connect(envUri, {
 })
   .then(() => console.log('MongoDB database Connected...'))
   .catch((err) => console.log("mongoose.connect has the following error: ", err));
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads')
-  },
-  filename: (req, file, cb) => {
-    cb(null, file.fieldname + '-' + Date.now())
-  }
-})
-
-console.log(storage);
-
-let upload = multer({ storage: storage });
 
 app.use('/api/account', AccountRoutes);
 app.use('/api/post', PostRoutes);
