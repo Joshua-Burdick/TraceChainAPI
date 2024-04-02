@@ -13,6 +13,7 @@ const LoginRoutes = require('./api/login');
 const RegisterRoutes = require('./api/register');
 const ImageUploadRoutes = require('./api/upload');
 const AccountVerificationRoutes = require('./api/accountVerification');
+const CommunityRoutes = require('./api/community');
 const envUri = process.env.MONGO_URI;
 
 const app = express();
@@ -42,6 +43,7 @@ app.use('/api/login', LoginRoutes);
 app.use('/api/register', RegisterRoutes);
 app.use('/api/upload', ImageUploadRoutes);
 app.use('/api/accountVerification', AccountVerificationRoutes)
+app.use('/api/community', CommunityRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT} 🎆...`);
