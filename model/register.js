@@ -7,6 +7,7 @@ const RegisterSchema = new Schema({
   displayName: String,
   password: String, 
   email: String, 
+  bio: String,
 });
 
 RegisterSchema.pre('save', async function (next) {

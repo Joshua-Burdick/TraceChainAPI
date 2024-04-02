@@ -5,6 +5,7 @@ const communitySchema = new Schema({
   userId: String,
   name: String,
   description: String,
+  members: [String],
   time: Date
 });
 

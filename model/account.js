@@ -7,7 +7,8 @@ const AccountSchema = new Schema({
     posts: [String],
     comments: [String],
     followers: [String],
-    following: [String]
+    following: [String],
+    bio: String
 })
 
 const Account = model('Account', AccountSchema, 'accounts');
