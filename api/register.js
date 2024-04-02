@@ -17,7 +17,7 @@ router.post('/', async (req, res) => {
   try {
     const { displayName, username, password, email } = req.body;
 
-    const newRegistration = new Register({ displayName, username, password, email });
+    const newRegistration = new Register({ displayName, username, password, email, bio: ""});
     await newRegistration.save();
 
     await Account.create({
@@ -26,7 +26,8 @@ router.post('/', async (req, res) => {
       usertag: username,
       posts: [],
       followers: [],
-      following: []
+      following: [],
+      bio: ""
     })
 
     res.status(201).json({ message: 'User registered successfully' });
