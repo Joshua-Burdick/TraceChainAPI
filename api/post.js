@@ -54,7 +54,6 @@ router.get('/:id/replies', async (req, res) => {
       res.status(404).json({ message: 'No data was found', data: `data: ${data}` });
     }
   } catch (error) {
-    console.error("An error occurred when trying to find the replies: ", error);
     res.status(500).json({ message: 'Error occurred while fetching data' });
   }
 });
