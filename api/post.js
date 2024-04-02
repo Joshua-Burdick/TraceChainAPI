@@ -72,7 +72,31 @@ router.put('/:id', async (req, res) => {
       data.sources = post.sources;
       data.isInformative = post.isInformative;
       data.isEdited = true;
+      data.photos = post.photos;
       data.time = new Date(post.time);
+      await data.save();
+
+      res.json({ message: 'Post updated' });
+    } else {
+      res.status(404).json({ message: 'No data was found', data: `data: ${data}` });
+    }
+  } catch (error) {
+    console.error("An error occurred when trying to update the post: ", error);
+    res.status(500).json({ message: 'Error occurred while updating data' });
+  }
+});
+
+router.post('/:id/images', async (req, res) => {
+  const { id } = req.params;
+  console.log("Received request with ID", id);
+
+  try {
+    const post = req.body;
+    const idAsObjectId = new mongoose.Types.ObjectId(id);
+    const data = await Post.findById(idAsObjectId).exec();
+
+    if (data) {
+      data.photos = post.photos;
       await data.save();
 
       res.json({ message: 'Post updated' });
@@ -143,17 +167,18 @@ router.put('/:id/likes_dislikes', async (req, res) => {
   }
 });
 
-router.post('/:id/', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     const userId = req.params.id;
     const post = req.body;
     const postId = new mongoose.Types.ObjectId();
 
-    const dbPost = await Post.create({
+    await Post.create({
       _id: postId,
       userId: post.userId,
       content: post.content,
       sources: post.sources,
+      photos: post.photos,
       replies: [],
       likes: [],
       dislikes: [],
@@ -163,7 +188,7 @@ router.post('/:id/', async (req, res) => {
       time: new Date(post.time),
     });
 
-    res.status(201).json(dbPost).end();
+    res.status(201).json(postId).end();
   } catch (error) {
     console.log("The following error occurred at /:id/:content : ", error);
     res.status(500).json({ message: "Error occurred" }).end();
@@ -171,7 +196,7 @@ router.post('/:id/', async (req, res) => {
 });
 
 
-router.delete(`/:id/`, async (req, res) => {
+router.delete(`/:id`, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -188,6 +213,7 @@ router.delete(`/:id/`, async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error deleting post: "});
   }
+  res.status(200).json({ message: "post deleted"});
 });
 
 module.exports = router;
