@@ -106,6 +106,7 @@ router.get('/find/:filename', async (req, res) => {
             err: 'Not an image'
         })
     }
+    res.status(200).json(result)
 });
 
 // @route GET /files
