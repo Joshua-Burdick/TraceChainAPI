@@ -86,6 +86,10 @@ router.delete('/:id/delete', async (req, res) => {
       const { param } = req.params;
       const userId  = req.params.id;
       const idAsObjectId = new mongoose.Types.ObjectId(param);
+      const user = await AccountVerification.findById(userId).select('following');
+      following.forEach(async (follow) => {
+        await Account.findByIdAndUpdate(follow, { $pull: { followers: userId } });
+      });
       await Account.deleteOne({ _id: userId });
       await AccountVerification.deleteOne({ _id: userId });
       await Post.deleteMany({_id: idAsObjectId, });

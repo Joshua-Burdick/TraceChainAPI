@@ -175,6 +175,7 @@ router.post('/:id', async (req, res) => {
     await Post.create({
       _id: postId,
       userId: post.userId,
+      communityId: post.communityId,
       content: post.content,
       sources: post.sources,
       photos: post.photos,
