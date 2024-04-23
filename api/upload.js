@@ -97,15 +97,16 @@ router.get('/find/:filename', async (req, res) => {
         // Read output to browser
         const readstream = gfs.createReadStream(file.filename);
         // readstream.pipe(res);
-        readstream.pipe(file);
+        // readstream.pipe(file);
+        readstream.on('data', (chunk) => {
+            res.status(200).render('newHandlebarFile', { image: chunk.toString('base64') });
+        })
     } else {
         res.status(404).json({
             err: 'Not an image'
         })
     }
-
     res.status(200).json(result)
-
 });
 
 // @route GET /files

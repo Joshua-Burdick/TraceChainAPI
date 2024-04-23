@@ -34,7 +34,7 @@ router.get(`/:id/feed`, async (req, res) => {
             .then(data => data.map(user => user._id))
             .catch(err => console.error("An error occurred when trying to generate Feed: ", err));
         const data = await Post.find({ userId: { $in: users } }).sort({ time: -1 });
-        console.log(data);
+        //console.log(data);
         res.json(data);
     } catch (error) {
         console.error("An error occurred when trying to generate Feed: ", error);
