@@ -13,13 +13,11 @@ router.get('/', (req, res) => {
 // get the posts of a certain user by the userid
 router.get('/user/:param', async (req, res) => {
   const { param } = req.params;
-  console.log("Received request with param", param);
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(param);
     // find the posts associated with that userId
     const userIdData = await Post.find({ userId: idAsObjectId }).sort({ time: -1 });
     if (userIdData) {
-      console.log(userIdData);
       res.json(userIdData);
     } else {
       res.status(404).json({ message: 'No data was found' });
@@ -32,11 +30,9 @@ router.get('/user/:param', async (req, res) => {
 
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
-  console.log("Received request with ID", id);
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(id);
     const data = await Post.findById(idAsObjectId).exec();
-    console.log(data);
     res.json(data);
   } catch (error) {
     console.error("An error occurred when trying to find the id: ", error);
@@ -46,7 +42,6 @@ router.get('/:id', async (req, res) => {
 
 router.get('/:id/replies', async (req, res) => {
   const { id } = req.params;
-  console.log("Received replies request with ID", id);
   
   try {
     const idAsObjectId = new mongoose.Types.ObjectId(id);
@@ -59,14 +54,12 @@ router.get('/:id/replies', async (req, res) => {
       res.status(404).json({ message: 'No data was found', data: `data: ${data}` });
     }
   } catch (error) {
-    console.error("An error occurred when trying to find the replies: ", error);
     res.status(500).json({ message: 'Error occurred while fetching data' });
   }
 });
 
 router.put('/:id', async (req, res) => {
   const { id } = req.params;
-  console.log("Received request with ID", id);
 
   try {
     const post = req.body;
@@ -117,7 +110,6 @@ router.post('/:id/images', async (req, res) => {
 
 router.put('/:id/replies', async (req, res) => {
   const { id } = req.params;
-  console.log("Received replies request with ID", id);
 
   try {
     const { replyId } = req.body;
@@ -140,7 +132,6 @@ router.put('/:id/replies', async (req, res) => {
 
 router.put('/:id/likes_dislikes', async (req, res) => {
   const { id } = req.params;
-  console.log("Received likes/dislikes request with ID", id);
   try {
     const { userId, like, dislike, remove } = req.body;
     const idAsObjectId = new mongoose.Types.ObjectId(id);
@@ -184,6 +175,7 @@ router.post('/:id', async (req, res) => {
     await Post.create({
       _id: postId,
       userId: post.userId,
+      communityId: post.communityId,
       content: post.content,
       sources: post.sources,
       photos: post.photos,
@@ -208,15 +200,16 @@ router.delete(`/:id`, async (req, res) => {
   const { id } = req.params;
 
   try {
-    const post = Post.findById(id);
+    const post = await Post.findById(id).exec();
     
     if (post.parentPostId) {
-      const parentPost = Post.findById(post.parentPostId).exec();
+      const parentPost = await Post.findById(post.parentPostId).exec();
+      console.log("Parent Post:", parentPost);
       parentPost.replies.pull(id);
       await parentPost.save();
     }
-    post.deleteOne().exec();
 
+    await post.deleteOne().exec();
   } catch (error) {
     console.log("Error deleting post: ", error);
     res.status(500).json({ message: "Error deleting post: "});

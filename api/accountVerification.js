@@ -45,7 +45,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id/changeAccount', async(req, res) => {
 //displayName, email, and username needs to be updated
     const userId  = req.params.id;
-    const { displayName, email, username} = req.body;
+    const { displayName, email, username, bio } = req.body;
 
   try {
     // Find the user by ID
@@ -59,6 +59,7 @@ router.put('/:id/changeAccount', async(req, res) => {
     user.displayName = displayName || user.displayName;
     user.email = email || user.email;
     user.username = username || user.username;
+    user.bio = bio || user.bio;
 
     // Save the updated user
     await user.save();
@@ -67,7 +68,8 @@ router.put('/:id/changeAccount', async(req, res) => {
     await Account.updateOne({ _id: userId }, {
         username: user.displayName,
         email: user.email,
-        usertag: user.username
+        usertag: user.username,
+        bio: user.bio
     });
 
     // Respond with updated user
@@ -84,6 +86,10 @@ router.delete('/:id/delete', async (req, res) => {
       const { param } = req.params;
       const userId  = req.params.id;
       const idAsObjectId = new mongoose.Types.ObjectId(param);
+      const user = await AccountVerification.findById(userId).select('following');
+      following.forEach(async (follow) => {
+        await Account.findByIdAndUpdate(follow, { $pull: { followers: userId } });
+      });
       await Account.deleteOne({ _id: userId });
       await AccountVerification.deleteOne({ _id: userId });
       await Post.deleteMany({_id: idAsObjectId, });
