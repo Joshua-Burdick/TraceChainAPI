@@ -8,6 +8,7 @@ const postSchema = new Schema({
   communityId: String,
   content: String,
   sources: [Object],
+  photos: [Object],
   replies: [String],
   likes: [String],
   dislikes: [String],
